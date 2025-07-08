@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Law - Transform Your Legal Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Legal Circuit Cursor */
+        .circuit-cursor {
+            position: fixed;
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle, #d4af37, #b8860b);
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.9);
+        }
+
+        .cursor-gavel {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.8;
+            font-size: 28px;
+            color: #d4af37;
+            transition: all 0.2s;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #000428, #004e92, #009ffd, #1a1a2e);
+            background-size: 400% 400%;
+            animation: heroGradient 12s ease infinite;
+        }
+
+        @keyframes heroGradient {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        /* Digital Legal Grid */
+        .legal-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.15;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(212, 175, 55, 0.1) 25%, rgba(212, 175, 55, 0.1) 26%, transparent 27%),
+                linear-gradient(90deg, transparent 24%, rgba(0, 212, 255, 0.1) 25%, rgba(0, 212, 255, 0.1) 26%, transparent 27%);
+            background-size: 60px 60px;
+            animation: gridMove 25s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 60px 60px; }
+        }
+
+        /* Floating Legal Automation Symbols */
+        .automation-symbols {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .auto-symbol {
+            position: absolute;
+            font-size: 3rem;
+            animation: symbolOrbit 15s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes symbolOrbit {
+            0% { 
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translate(50px, -30px) rotate(90deg) scale(1.2);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(0, -60px) rotate(180deg) scale(1);
+                opacity: 0.6;
+            }
+            75% { 
+                transform: translate(-50px, -30px) rotate(270deg) scale(1.1);
+                opacity: 0.4;
+            }
+            100% { 
+                transform: translate(0, 0) rotate(360deg) scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        /* AI Legal Documents Stream */
+        .document-stream {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .ai-document {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            animation: docStream 14s linear infinite;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        @keyframes docStream {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotateY(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100vh) translateX(150px) rotateY(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Legal Code Matrix */
+        .legal-matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-size: 14px;
+            color: #00ff88;
+            white-space: pre;
+            animation: matrixFall 12s linear infinite;
+            opacity: 0.4;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        @keyframes matrixFall {
+            to { top: 100%; }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        .brand-logo {
+            font-size: 6rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #d4af37, #00d4ff, #ff006e, #8338ec, #00ff88);
+            background-size: 500% 500%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: brandShimmer 5s ease-in-out infinite, brandFloat 8s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            letter-spacing: 2px;
+        }
+
+        @keyframes brandShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        @keyframes brandFloat {
+            0%, 100% { transform: translateY(0) scale(1) rotateX(0deg); }
+            33% { transform: translateY(-15px) scale(1.05) rotateX(5deg); }
+            66% { transform: translateY(-5px) scale(0.98) rotateX(-3deg); }
+        }
+
+        .hero-tagline {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #d4af37;
+            animation: taglineType 4s ease-out;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        @keyframes taglineType {
+            0% { width: 0; overflow: hidden; }
+            100% { width: 100%; }
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Revolutionary Stats */
+        .revolution-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-capsule {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .stat-capsule:hover {
+            transform: translateY(-15px) rotateX(10deg) rotateY(5deg);
+            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.4);
+            border-color: #d4af37;
+        }
+
+        .stat-capsule::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .stat-capsule:hover::before {
+            left: 100%;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d4af37;
+            display: block;
+            margin-bottom: 0.5rem;
+            animation: statPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes statPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .stat-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        /* CTA Buttons */
+        .cta-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .cta-button {
+            padding: 1.5rem 3rem;
+            background: linear-gradient(45deg, #d4af37, #b8860b);
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.6);
+            background: linear-gradient(45deg, #ffd700, #d4af37);
+        }
+
+        .cta-secondary {
+            background: linear-gradient(45deg, transparent, transparent);
+            color: #d4af37;
+            border: 2px solid #d4af37;
+        }
+
+        .cta-secondary:hover {
+            background: linear-gradient(45deg, #d4af37, #b8860b);
+            color: #000;
+        }
+
+        /* Features Showcase */
+        .features-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            position: relative;
+        }
+
+        .features-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, #d4af37, #00d4ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5)); }
+            50% { filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.7)); }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-20px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 35px 70px rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+        }
+
+        .feature-bg-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transform: translateX(-100%) skewX(-15deg);
+            transition: transform 0.8s ease;
+        }
+
+        .feature-card:hover .feature-bg-wave {
+            transform: translateX(100%) skewX(-15deg);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            color: #d4af37;
+            animation: featureIconSpin 6s ease-in-out infinite;
+        }
+
+        @keyframes featureIconSpin {
+            0%, 100% { transform: rotateY(0deg) scale(1); }
+            25% { transform: rotateY(90deg) scale(1.1); }
+            50% { transform: rotateY(180deg) scale(1); }
+            75% { transform: rotateY(270deg) scale(1.1); }
+        }
+
+        .feature-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #d4af37;
+        }
+
+        .feature-description {
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .feature-benefits {
+            list-style: none;
+        }
+
+        .feature-benefits li {
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 2.5rem;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+
+        .feature-benefits li:hover {
+            opacity: 1;
+            transform: translateX(10px);
+            color: #d4af37;
+        }
+
+        .feature-benefits li::before {
+            content: '⚡';
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+            font-size: 1.2rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        .feature-impact {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .impact-metric {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ff88;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .impact-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* AI Process Visualization */
+        .ai-demo-section {
+            padding: 6rem 2rem;
+            background: #000;
+            position: relative;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            height: 700px;
+        }
+
+        .demo-title {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, #d4af37, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ai-process-node {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.8), rgba(184, 134, 11, 0.4));
+            border: 3px solid #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            animation: processNodePulse 4s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .ai-process-node:hover {
+            transform: scale(1.4);
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.9);
+            z-index: 100;
+        }
+
+        @keyframes processNodePulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 50px rgba(212, 175, 55, 0.8);
+            }
+        }
+
+        .process-connection {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.8), transparent);
+            transform-origin: left center;
+            animation: connectionEnergy 6s ease-in-out infinite;
+        }
+
+        @keyframes connectionEnergy {
+            0%, 100% { 
+                opacity: 0.4; 
+                transform: scaleX(1); 
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scaleX(1.2); 
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); 
+            }
+        }
+
+        .process-label {
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 1rem;
+            color: #d4af37;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+            white-space: nowrap;
+        }
+
+        /* Testimonial Section */
+        .testimonial-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #1a1a2e, #000428);
+            position: relative;
+        }
+
+        .testimonial-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(15px);
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-quote {
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #d4af37;
+        }
+
+        .testimonial-author {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .testimonial-firm {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Final CTA Section */
+        .final-cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(45deg, #d4af37, #b8860b, #1a1a2e, #000428);
+            background-size: 400% 400%;
+            animation: ctaGradient 8s ease infinite;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes ctaGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .final-cta-title {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: #000;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
+            font-weight: 900;
+        }
+
+        .final-cta-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #000;
+            opacity: 0.8;
+        }
+
+        /* Scroll Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .brand-logo {
+                font-size: 4rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1.8rem;
+            }
+            
+            .revolution-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .final-cta-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Circuit Cursor -->
+    <div class="circuit-cursor" id="circuitCursor"></div>
+    <div class="cursor-gavel" id="cursorGavel">⚖️</div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <!-- Legal Grid Background -->
+        <div class="legal-grid"></div>
+        
+        <!-- Automation Symbols -->
+        <div class="automation-symbols" id="automationSymbols"></div>
+        
+        <!-- AI Document Stream -->
+        <div class="document-stream" id="documentStream"></div>
+        
+        <!-- Legal Matrix -->
+        <div class="legal-matrix" id="legalMatrix"></div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1 class="brand-logo">AUTOMATE LAW</h1>
+            <h2 class="hero-tagline">The Future of Legal Practice</h2>
+            <p class="hero-description">
+                Revolutionary AI-powered automation that transforms law firms from chaotic manual operations 
+                into hyper-efficient, data-driven powerhouses. Experience the next evolution of legal technology.
+            </p>
+            
+            <!-- Revolution Stats -->
+            <div class="revolution-stats">
+                <div class="stat-capsule">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-description">Time Reduction</span>
+                </div>
+                <div class="stat-capsule">
+                    <span class="stat-number">10x</span>
+                    <span class="stat-description">Efficiency Gain</span>
+                </div>
+                <div class="stat-capsule">
+                    <span class="stat-number">Zero</span>
+                    <span class="stat-description">Dropped Leads</span>
+                </div>
+                <div class="stat-capsule">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-description">AI Monitoring</span>
+                </div>
+            </div>
+            
+            <!-- CTA Buttons -->
+            <div class="cta-container">
+                <a href="#features" class="cta-button">Discover Solutions</a>
+                <a href="#demo" class="cta-button cta-secondary">See AI in Action</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="features-container">
+            <h2 class="section-title fade-in-up">Revolutionary Automation</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">🤖</span>
+                    <h3 class="feature-title">AI Legal Assistant</h3>
+                    <p class="feature-description">
+                        Advanced artificial intelligence that understands legal contexts, processes documents, 
+                        and automates complex workflows with unprecedented accuracy and speed.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Natural language document processing</li>
+                        <li>Intelligent case categorization</li>
+                        <li>Automated legal research</li>
+                        <li>Smart deadline management</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class="impact-metric">300%</span>
+                        <span class="impact-label">Decision Accuracy</span>
+                    </div>
+                </div>
+
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">Secure AI Infrastructure</h3>
+                    <p class="feature-description">
+                        Enterprise-grade security with local AI processing ensures complete confidentiality 
+                        while delivering cutting-edge automation capabilities designed specifically for legal practice.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Local AI processing (no cloud dependency)</li>
+                        <li>Attorney-client privilege protection</li>
+                        <li>Encrypted data transmission</li>
+                        <li>Compliance with legal standards</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class="impact-metric">100%</span>
+                        <span class="impact-label">Data Privacy</span>
+                    </div>
+                </div>
+
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">🌐</span>
+                    <h3 class="feature-title">Total Integration</h3>
+                    <p class="feature-description">
+                        Seamlessly connect all your existing systems into one unified, intelligent ecosystem 
+                        that eliminates data silos and creates perfect operational harmony.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>CRM and case management integration</li>
+                        <li>Communication platform unification</li>
+                        <li>Document management synchronization</li>
+                        <li>Financial system connectivity</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class="impact-metric">15%</span>
+                        <span class="impact-label">Revenue Increase</span>
+                    </div>
+                </div>
+
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">🚀</span>
+                    <h3 class="feature-title">Intelligent Scaling</h3>
+                    <p class="feature-description">
+                        AI-powered growth optimization that automatically adapts to your firm's expansion, 
+                        ensuring systems scale seamlessly as your practice grows and evolves.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Adaptive resource allocation</li>
+                        <li>Automatic capacity planning</li>
+                        <li>Performance optimization</li>
+                        <li>Growth trajectory analysis</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class="impact-metric">500%</span>
+                        <span class="impact-label">Scalability Factor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section class="ai-demo-section" id="demo">
+        <div class="demo-container">
+            <h2 class="demo-title fade-in-up">AI Automation Network</h2>
+            <div id="aiDemoNetwork"></div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonial-section">
+        <div class="testimonial-container">
+            <h2 class="section-title fade-in-up">Transforming Legal Practices</h2>
+            
+            <div class="testimonial-card fade-in-up">
+                <p class="testimonial-quote">
+                    "Automate Law has completely revolutionized our practice. We've eliminated manual bottlenecks, 
+                    increased our case throughput by 200%, and our team can now focus on what they do best - 
+                    practicing law, not managing paperwork."
+                </p>
+                <div class="testimonial-author">Sarah Mitchell, Managing Partner</div>
+                <div class="testimonial-firm">Mitchell & Associates Law Firm</div>
+            </div>
+            
+            <div class="testimonial-card fade-in-up">
+                <p class="testimonial-quote">
+                    "The AI integration was seamless and the results were immediate. Our lead conversion rate 
+                    improved by 40% in the first month, and we haven't missed a single follow-up since implementation. 
+                    This technology is the future of legal practice."
+                </p>
+                <div class="testimonial-author">David Chen, Senior Partner</div>
+                <div class="testimonial-firm">Chen Legal Group</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta-section">
+        <div class="final-cta-content">
+            <h2 class="final-cta-title fade-in-up">Ready to Transform?</h2>
+            <p class="final-cta-subtitle fade-in-up">
+                Join the legal automation revolution and experience the future of law practice today.
+            </p>
+            <div class="cta-container fade-in-up">
+                <a href="mailto:contact@automate-law.com" class="cta-button">Start Your Transformation</a>
+                <a href="tel:+1-800-AUTOMATE" class="cta-button cta-secondary">Schedule a Demo</a>
+            </div>
+            
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(0, 0, 0, 0.3); border-radius: 15px; backdrop-filter: blur(10px);" class="fade-in-up">
+                <h3 style="color: #000; margin-bottom: 1rem; font-size: 1.5rem;">Get Started Today</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 1.5rem;">📧</span>
+                        <div>
+                            <strong style="color: #000;">Email</strong><br>
+                            <span style="color: #000; opacity: 0.8;">contact@automate-law.com</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 1.5rem;">📞</span>
+                        <div>
+                            <strong style="color: #000;">Phone</strong><br>
+                            <span style="color: #000; opacity: 0.8;">1-800-AUTOMATE</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 1.5rem;">🌐</span>
+                        <div>
+                            <strong style="color: #000;">Website</strong><br>
+                            <span style="color: #000; opacity: 0.8;">www.automate-law.com</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 1.5rem;">⚡</span>
+                        <div>
+                            <strong style="color: #000;">Response Time</strong><br>
+                            <span style="color: #000; opacity: 0.8;">Same Day</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Circuit Cursor with Gavel
+        const circuitCursor = document.getElementById('circuitCursor');
+        const cursorGavel = document.getElementById('cursorGavel');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            circuitCursor.style.left = mouseX + 'px';
+            circuitCursor.style.top = mouseY + 'px';
+            
+            cursorGavel.style.left = (mouseX - 25) + 'px';
+            cursorGavel.style.top = (mouseY - 25) + 'px';
+            
+            // Create golden cursor trail
+            if (Math.random() > 0.85) {
+                createGoldenTrail(mouseX, mouseY);
+            }
+        });
+
+        function createGoldenTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.style.position = 'fixed';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            trail.style.width = '6px';
+            trail.style.height = '6px';
+            trail.style.background = '#d4af37';
+            trail.style.borderRadius = '50%';
+            trail.style.pointerEvents = 'none';
+            trail.style.zIndex = '9998';
+            trail.style.opacity = '0.9';
+            trail.style.boxShadow = '0 0 10px #d4af37';
+            document.body.appendChild(trail);
+            
+            trail.animate([
+                { transform: 'scale(1)', opacity: 0.9 },
+                { transform: 'scale(0)', opacity: 0 }
+            ], {
+                duration: 600,
+                easing: 'ease-out'
+            }).onfinish = () => trail.remove();
+        }
+
+        // Automation Symbols
+        function createAutomationSymbols() {
+            const container = document.getElementById('automationSymbols');
+            const symbols = ['⚖️', '🤖', '⚡', '📊', '🔒', '🌐', '🚀', '📋', '💻', '🎯'];
+            
+            for (let i = 0; i < 20; i++) {
+                const symbol = document.createElement('div');
+                symbol.className = 'auto-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.top = Math.random() * 100 + '%';
+                symbol.style.color = i % 3 === 0 ? '#d4af37' : i % 3 === 1 ? '#00d4ff' : '#00ff88';
+                symbol.style.animationDelay = Math.random() * 15 + 's';
+                symbol.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(symbol);
+            }
+        }
+
+        // AI Document Stream
+        function createDocumentStream() {
+            const container = document.getElementById('documentStream');
+            const docTypes = ['📄', '📋', '📊', '💼', '📑', '🗂️'];
+            
+            setInterval(() => {
+                const doc = document.createElement('div');
+                doc.className = 'ai-document';
+                doc.textContent = docTypes[Math.floor(Math.random() * docTypes.length)];
+                doc.style.left = Math.random() * 90 + '%';
+                doc.style.animationDuration = (Math.random() * 6 + 10) + 's';
+                container.appendChild(doc);
+                
+                setTimeout(() => doc.remove(), 14000);
+            }, 1200);
+        }
+
+        // Legal Matrix Code
+        function createLegalMatrix() {
+            const container = document.getElementById('legalMatrix');
+            const legalCode = [
+                'automate.intake(client_data);',
+                'ai.process_documents(legal_files);',
+                'workflow.assign_tasks(priority_high);',
+                'analytics.predict_outcome(case_data);',
+                'security.encrypt_transmission();',
+                'integration.sync_all_systems();',
+                'scale.optimize_resources();',
+                'monitor.track_performance();',
+                'alert.notify_deadline_approaching();',
+                'calculate.billing_automation();'
+            ];
+            
+            for (let i = 0; i < 25; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDelay = Math.random() * 12 + 's';
+                column.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                column.style.fontSize = (Math.random() * 6 + 10) + 'px';
+                
+                let text = '';
+                for (let j = 0; j < 25; j++) {
+                    text += legalCode[Math.floor(Math.random() * legalCode.length)] + '\n';
+                }
+                column.textContent = text;
+                
+                container.appendChild(column);
+            }
+        }
+
+        // AI Demo Network
+        function createAIDemoNetwork() {
+            const container = document.getElementById('aiDemoNetwork');
+            const processes = [
+                { name: 'Client Intake', icon: '📋', x: 10, y: 15 },
+                { name: 'Document AI', icon: '📄', x: 90, y: 15 },
+                { name: 'Workflow Engine', icon: '⚡', x: 50, y: 35 },
+                { name: 'Analytics Hub', icon: '📊', x: 10, y: 65 },
+                { name: 'Security Core', icon: '🔒', x: 90, y: 65 },
+                { name: 'Integration Layer', icon: '🌐', x: 30, y: 85 },
+                { name: 'Scale Optimizer', icon: '🚀', x: 70, y: 85 }
+            ];
+            
+            // Create nodes
+            processes.forEach((process, index) => {
+                const node = document.createElement('div');
+                node.className = 'ai-process-node';
+                node.style.left = process.x + '%';
+                node.style.top = process.y + '%';
+                node.textContent = process.icon;
+                node.style.animationDelay = index * 0.3 + 's';
+                
+                const label = document.createElement('div');
+                label.className = 'process-label';
+                label.textContent = process.name;
+                node.appendChild(label);
+                
+                container.appendChild(node);
+                
+                // Add click interaction
+                node.addEventListener('click', () => {
+                    node.style.background = 'radial-gradient(circle, rgba(0, 255, 136, 0.9), rgba(212, 175, 55, 0.5))';
+                    node.style.transform = 'scale(1.6)';
+                    node.style.zIndex = '200';
+                    
+                    // Create legal explosion
+                    const legalSymbols = ['⚖️', '📜', '🏛️', '📋', '💼'];
+                    for (let i = 0; i < 12; i++) {
+                        const explosion = document.createElement('div');
+                        explosion.style.position = 'absolute';
+                        explosion.style.fontSize = '1.5rem';
+                        explosion.style.left = '50%';
+                        explosion.style.top = '50%';
+                        explosion.style.pointerEvents = 'none';
+                        explosion.style.zIndex = '300';
+                        explosion.textContent = legalSymbols[Math.floor(Math.random() * legalSymbols.length)];
+                        
+                        const angle = (i / 12) * Math.PI * 2;
+                        const distance = 150;
+                        const targetX = Math.cos(angle) * distance;
+                        const targetY = Math.sin(angle) * distance;
+                        
+                        node.appendChild(explosion);
+                        
+                        explosion.animate([
+                            { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 1 },
+                            { transform: `translate(${targetX}px, ${targetY}px) scale(1.5) rotate(720deg)`, opacity: 0 }
+                        ], {
+                            duration: 1500,
+                            easing: 'ease-out'
+                        }).onfinish = () => explosion.remove();
+                    }
+                    
+                    setTimeout(() => {
+                        node.style.background = 'radial-gradient(circle, rgba(212, 175, 55, 0.8), rgba(184, 134, 11, 0.4))';
+                        node.style.transform = 'scale(1)';
+                        node.style.zIndex = 'auto';
+                    }, 2500);
+                });
+            });
+            
+            // Create connections
+            const connections = [
+                [0, 2], [1, 2], [2, 3], [2, 4], [3, 5], [4, 6], [5, 6], // Main flow
+                [0, 1], [3, 4], [5, 4], [0, 3], [1, 4] // Cross connections
+            ];
+            
+            connections.forEach((connection, index) => {
+                const [start, end] = connection;
+                const startProcess = processes[start];
+                const endProcess = processes[end];
+                
+                const line = document.createElement('div');
+                line.className = 'process-connection';
+                
+                const startX = (startProcess.x / 100) * container.offsetWidth;
+                const startY = (startProcess.y / 100) * container.offsetHeight;
+                const endX = (endProcess.x / 100) * container.offsetWidth;
+                const endY = (endProcess.y / 100) * container.offsetHeight;
+                
+                const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                
+                line.style.left = startX + 'px';
+                line.style.top = startY + 'px';
+                line.style.width = distance + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.animationDelay = index * 0.2 + 's';
+                
+                container.appendChild(line);
+            });
+        }
+
+        // Enhanced Feature Cards
+        function enhanceFeatureCards() {
+            const cards = document.querySelectorAll('.feature-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Create legal automation particle burst
+                    const autoSymbols = ['⚡', '🤖', '⚖️', '📊', '🔒', '🌐'];
+                    
+                    for (let i = 0; i < 15; i++) {
+                        const particle = document.createElement('div');
+                        particle.style.position = 'absolute';
+                        particle.style.fontSize = '1.2rem';
+                        particle.style.pointerEvents = 'none';
+                        particle.style.left = '50%';
+                        particle.style.top = '50%';
+                        particle.style.zIndex = '1000';
+                        particle.textContent = autoSymbols[Math.floor(Math.random() * autoSymbols.length)];
+                        particle.style.color = '#d4af37';
+                        
+                        const angle = (i / 15) * Math.PI * 2;
+                        const distance = 140;
+                        const targetX = Math.cos(angle) * distance;
+                        const targetY = Math.sin(angle) * distance;
+                        
+                        card.appendChild(particle);
+                        
+                        particle.animate([
+                            { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 1 },
+                            { transform: `translate(${targetX}px, ${targetY}px) scale(1.2) rotate(360deg)`, opacity: 0 }
+                        ], {
+                            duration: 1400,
+                            easing: 'ease-out'
+                        }).onfinish = () => particle.remove();
+                    }
+                });
+            });
+        }
+
+        // CTA Button Enhancements
+        function enhanceCTAButtons() {
+            const buttons = document.querySelectorAll('.cta-button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    // Create golden automation explosion
+                    for (let i = 0; i < 25; i++) {
+                        const particle = document.createElement('div');
+                        particle.style.position = 'absolute';
+                        particle.style.width = '10px';
+                        particle.style.height = '10px';
+                        particle.style.background = '#d4af37';
+                        particle.style.borderRadius = '50%';
+                        particle.style.pointerEvents = 'none';
+                        particle.style.left = e.offsetX + 'px';
+                        particle.style.top = e.offsetY + 'px';
+                        particle.style.zIndex = '1000';
+                        particle.style.boxShadow = '0 0 15px #d4af37';
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const velocity = Math.random() * 150 + 80;
+                        const targetX = Math.cos(angle) * velocity;
+                        const targetY = Math.sin(angle) * velocity;
+                        
+                        button.appendChild(particle);
+                        
+                        particle.animate([
+                            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                            { transform: `translate(${targetX}px, ${targetY}px) scale(0)`, opacity: 0 }
+                        ], {
+                            duration: 2000,
+                            easing: 'ease-out'
+                        }).onfinish = () => particle.remove();
+                    }
+                });
+            });
+        }
+
+        // Scroll Triggered Animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in-up');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            elements.forEach(el => observer.observe(el));
+        }
+
+        // Advanced Mouse Interactions
+        function addAdvancedInteractions() {
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                // Parallax effect on automation symbols
+                const symbols = document.querySelectorAll('.auto-symbol');
+                symbols.forEach((symbol, index) => {
+                    const speed = (index % 5 + 1) * 0.4;
+                    const offsetX = (mouseX - 0.5) * speed * 40;
+                    const offsetY = (mouseY - 0.5) * speed * 40;
+                    
+                    symbol.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${offsetX * 2}deg)`;
+                });
+                
+                // Feature cards respond to mouse
+                const featureCards = document.querySelectorAll('.feature-card');
+                featureCards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const cardCenterY = rect.top + rect.height / 2;
+                    
+                    const distanceX = e.clientX - cardCenterX;
+                    const distanceY = e.clientY - cardCenterY;
+                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    
+                    if (distance < 300) {
+                        const intensity = (300 - distance) / 300;
+                        const rotateX = (distanceY / 300) * intensity * 10;
+                        const rotateY = (distanceX / 300) * intensity * -10;
+                        
+                        card.style.transform = `translateY(-20px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${1 + intensity * 0.05})`;
+                    }
+                });
+            });
+        }
+
+        // Initialize All Effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createAutomationSymbols();
+            createDocumentStream();
+            createLegalMatrix();
+            createAIDemoNetwork();
+            enhanceFeatureCards();
+            enhanceCTAButtons();
+            handleScrollAnimations();
+            addAdvancedInteractions();
+            
+            // Smooth fade in
+            document.body.style.opacity = '1';
+            document.body.style.transition = 'opacity 0.8s ease';
+        });
+
+        // Performance monitoring and optimization
+        let animationFrameCount = 0;
+        let lastPerformanceCheck = performance.now();
+        
+        function monitorPerformance() {
+            animationFrameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastPerformanceCheck >= 1000) {
+                const fps = Math.round((animationFrameCount * 1000) / (currentTime - lastPerformanceCheck));
+                
+                // Optimize based on performance
+                if (fps < 30) {
+                    // Reduce animation complexity
+                    document.querySelectorAll('.matrix-column').forEach(col => {
+                        col.style.animationDuration = '20s';
+                    });
+                    document.querySelectorAll('.auto-symbol').forEach(symbol => {
+                        symbol.style.animationDuration = '20s';
+                    });
+                } else if (fps > 50) {
+                    // Enhance animations for high-performance devices
+                    document.body.style.setProperty('--animation-multiplier', '1.2');
+                }
+                
+                animationFrameCount = 0;
+                lastPerformanceCheck = currentTime;
+            }
+            
+            requestAnimationFrame(monitorPerformance);
+        }
+        
+        monitorPerformance();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>="impact-metric">85%</span>
+                        <span class="impact-label">Document Processing Speed</span>
+                    </div>
+                </div>
+
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Instant Workflow Automation</h3>
+                    <p class="feature-description">
+                        Transform manual processes into intelligent automated workflows that operate 24/7, 
+                        ensuring nothing falls through the cracks while maximizing team productivity.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Automated client intake processing</li>
+                        <li>Smart task assignment and routing</li>
+                        <li>Intelligent follow-up sequences</li>
+                        <li>Real-time quality assurance</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class="impact-metric">200+</span>
+                        <span class="impact-label">Hours Saved Monthly</span>
+                    </div>
+                </div>
+
+                <div class="feature-card fade-in-up">
+                    <div class="feature-bg-wave"></div>
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Predictive Analytics</h3>
+                    <p class="feature-description">
+                        Harness the power of data science to predict case outcomes, optimize resource allocation, 
+                        and make data-driven decisions that dramatically improve firm performance.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Case outcome prediction modeling</li>
+                        <li>Resource optimization algorithms</li>
+                        <li>Performance trend analysis</li>
+                        <li>ROI tracking and attribution</li>
+                    </ul>
+                    <div class="feature-impact">
+                        <span class
