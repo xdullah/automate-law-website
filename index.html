@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PI ENGINE — Sub-60-second AI lead response. Running on a box in your office. | OptiVis</title>
+<meta name="description" content="Local-LLM intake system for personal injury firms. Sub-60-second lead response, 24/7. No SaaS lock-in. No client data leaving your network. Built for PI firms with 3–15 attorneys.">
+<meta name="theme-color" content="#101114">
+
+<!-- Open Graph -->
+<meta property="og:title" content="PI ENGINE — Sub-60-second lead response, on hardware in your office.">
+<meta property="og:description" content="Local-LLM intake and workflow enforcement for personal injury firms. No SaaS. No client data leaving your network.">
+<meta property="og:type" content="website">
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5LB2TVZC');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WHYNLVLRVG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WHYNLVLRVG');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #101114;
+  --bg-elev: #16181c;
+  --accent: #00B8FF;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.65);
+  --text-muted: rgba(255,255,255,0.40);
+  --rule: rgba(255,255,255,0.08);
+  --rule-strong: rgba(255,255,255,0.18);
+  --rail: 40px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* 5% white grid overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 40px left vertical guide rail */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--rail);
+  border-right: 1px solid var(--rule);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 32px 0 calc(var(--rail) + 32px);
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 640px) {
+  .container { padding: 0 20px 0 calc(var(--rail) + 16px); }
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- Typographic primitives ---------- */
+.label {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.label-muted {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- Top brief bar ---------- */
+.brief-bar {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(16,17,20,0.92);
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  z-index: 50;
+}
+.brief-bar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.brief-bar-left { color: var(--text-muted); }
+.brief-bar-left strong { color: var(--text); font-weight: 500; }
+.brief-bar-left .accent { color: var(--accent); }
+.brief-bar-right { color: var(--text-muted); }
+@media (max-width: 640px) {
+  .brief-bar-right { display: none; }
+  .brief-bar-inner { font-size: 10px; }
+}
+
+/* ---------- Hero ---------- */
+.hero { padding: 104px 0 120px; }
+.hero-meta {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.hero-meta-divider { width: 28px; height: 1px; background: var(--rule-strong); }
+
+h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: clamp(38px, 6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin-bottom: 32px;
+  max-width: 14ch;
+}
+h1 .accent { color: var(--accent); }
+
+.hero-sub {
+  font-size: clamp(17px, 1.6vw, 21px);
+  line-height: 1.55;
+  color: var(--text-dim);
+  max-width: 620px;
+  margin-bottom: 44px;
+  font-weight: 400;
+}
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #000;
+  padding: 18px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, background 120ms ease;
+  border: 1px solid var(--accent);
+}
+.cta:hover { transform: translateY(-2px); background: #33C7FF; }
+.cta-arrow { font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+
+.cta-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--rule-strong);
+}
+.cta-secondary:hover { background: rgba(255,255,255,0.04); border-color: var(--text); }
+
+.cta-fineprint {
+  margin-top: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ---------- Sections ---------- */
+section { padding: 96px 0; border-top: 1px solid var(--rule); position: relative; }
+section:first-of-type { border-top: none; padding-top: 0; }
+
+.section-tag {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.section-tag-bar { width: 28px; height: 1px; background: var(--accent); }
+
+h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: clamp(30px, 4vw, 50px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+  max-width: 22ch;
+}
+h2 .accent { color: var(--accent); }
+
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+p { font-size: 17px; line-height: 1.65; color: var(--text-dim); margin-bottom: 18px; max-width: 65ch; }
+p.lede { font-size: 21px; line-height: 1.55; color: var(--text); max-width: 700px; font-weight: 400; }
+p:last-child { margin-bottom: 0; }
+strong { color: var(--text); font-weight: 600; }
+
+/* ---------- Stat row ---------- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+  margin: 48px 0 0;
+}
+.stat {
+  padding: 28px 24px;
+  border-right: 1px solid var(--rule);
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 44px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.stat-num .accent { color: var(--accent); }
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.stat-label .source { display: block; opacity: 0.7; margin-top: 4px; }
+@media (max-width: 720px) {
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(odd) { border-right: 1px solid var(--rule); }
+  .stat:nth-child(even) { border-right: none; }
+  .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--rule); }
+  .stat-num { font-size: 36px; }
+}
+
+/* ---------- Mechanism flow ---------- */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule-strong);
+  margin-top: 40px;
+  border: 1px solid var(--rule-strong);
+}
+.flow-step {
+  background: var(--bg);
+  padding: 32px 28px;
+  position: relative;
+  min-height: 240px;
+}
+.flow-step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+.flow-step h3 { font-size: 18px; margin-bottom: 10px; }
+.flow-step p { font-size: 14.5px; margin-bottom: 0; line-height: 1.55; }
+@media (max-width: 720px) { .flow { grid-template-columns: 1fr; } .flow-step { min-height: auto; } }
+
+/* ---------- Spec table ---------- */
+.spec-table {
+  border-top: 1px solid var(--rule-strong);
+  margin-top: 32px;
+}
+.spec-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.spec-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.spec-val {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.spec-val .accent { color: var(--accent); }
+@media (max-width: 640px) {
+  .spec-row { grid-template-columns: 1fr; gap: 6px; padding: 18px 0; }
+}
+
+/* ---------- Compare blocks ---------- */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule-strong);
+  margin-top: 32px;
+  border: 1px solid var(--rule-strong);
+}
+.compare-col { background: var(--bg); padding: 32px 28px; }
+.compare-col h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+.compare-col.bad h4 { color: var(--text-muted); }
+.compare-col.good h4 { color: var(--accent); }
+.compare-col ul { list-style: none; padding: 0; }
+.compare-col li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.5;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.compare-col.bad li { color: var(--text-muted); }
+.compare-col.good li { color: var(--text); }
+.compare-col li::before {
+  content: '—';
+  font-family: 'IBM Plex Mono', monospace;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.compare-col.good li::before { color: var(--accent); }
+.compare-col.bad li::before { color: var(--text-muted); }
+.compare-col li:last-child { border-bottom: none; }
+@media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+
+/* ---------- Fit block ---------- */
+.fit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule-strong);
+  margin-top: 32px;
+  border: 1px solid var(--rule-strong);
+}
+.fit-col { background: var(--bg); padding: 32px 28px; }
+.fit-col h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.fit-col.in h4 { color: var(--accent); }
+.fit-col.out h4 { color: var(--text-muted); }
+.fit-col p { font-size: 15px; line-height: 1.55; margin-bottom: 14px; }
+.fit-col.out p { color: var(--text-muted); }
+@media (max-width: 640px) { .fit { grid-template-columns: 1fr; } }
+
+/* ---------- Offer stack ---------- */
+.offer-stack {
+  border: 1px solid var(--rule-strong);
+  margin: 44px 0 28px;
+}
+.offer-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 200px;
+  gap: 24px;
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--rule);
+  align-items: center;
+}
+.offer-row:last-child { border-bottom: none; }
+.offer-row-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.offer-row-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.offer-row-desc { font-size: 14px; color: var(--text-dim); line-height: 1.55; max-width: 56ch; margin: 0; }
+.offer-row-price {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  text-align: right;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.offer-row-price .accent { color: var(--accent); display: block; font-size: 11px; margin-top: 4px; }
+@media (max-width: 720px) {
+  .offer-row { grid-template-columns: 1fr; padding: 24px; gap: 12px; }
+  .offer-row-price { text-align: left; }
+}
+
+/* ---------- Closing CTA block ---------- */
+.close-cta {
+  border: 1px solid var(--accent);
+  padding: 56px 48px;
+  margin-top: 48px;
+  position: relative;
+  background: rgba(0, 184, 255, 0.025);
+}
+.close-cta h2 { margin-bottom: 16px; max-width: 18ch; }
+.close-cta p { color: var(--text-dim); margin-bottom: 32px; max-width: 60ch; }
+@media (max-width: 640px) { .close-cta { padding: 36px 24px; } }
+
+/* ---------- Footer ---------- */
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 40px 0 56px;
+  margin-top: 64px;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.footer-brand {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.footer-brand .accent { color: var(--accent); }
+.footer-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: right;
+  line-height: 1.8;
+}
+@media (max-width: 640px) {
+  .footer-meta { text-align: left; }
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* Progressive enhancement: visible by default. JS adds .js-ready to enable hide-then-reveal. */
+.js-ready .reveal { opacity: 0; }
+.js-ready .reveal.in { animation: fadeUp 720ms cubic-bezier(.2,.6,.2,1) forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .js-ready .reveal { opacity: 1; }
+  .js-ready .reveal.in { animation: none; }
+}
+
+/* ---------- Cursor blink ---------- */
+.cursor-blink {
+  display: inline-block;
+  width: 8px;
+  background: var(--accent);
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+  height: 12px;
+  vertical-align: -1px;
+}
+@keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<!-- ======================== TOP BRIEF BAR ======================== -->
+<div class="brief-bar">
+  <div class="container">
+    <div class="brief-bar-inner">
+      <div class="brief-bar-left">
+        FIELD REPORT 001 &nbsp;/&nbsp; <strong>PI ENGINE</strong> &nbsp;/&nbsp; <span class="accent">CLASSIFICATION: RESTRICTED</span>
+      </div>
+      <div class="brief-bar-right">OPTIVIS.DEV</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta reveal">
+      <span class="label">BRIEF 001 — PI ENGINE</span>
+      <span class="hero-meta-divider"></span>
+      <span class="label-muted">HOUSTON, TEXAS</span>
+    </div>
+
+    <h1 class="reveal">An AI intake system that runs on a <span class="accent">box in your office</span>—and answers every lead in under 60 seconds.</h1>
+
+    <p class="hero-sub reveal">PI ENGINE is a local-LLM intake and workflow enforcement layer for personal injury firms. Sub-60-second response, 24/7. No SaaS lock-in. No client data leaving your network. Built for firms with 3–15 attorneys.</p>
+
+    <div class="cta-row reveal">
+      <a href="#book" class="cta">Schedule a 20-min briefing <span class="cta-arrow">→</span></a>
+      <a href="#mechanism" class="cta cta-secondary">See how it works</a>
+    </div>
+    <div class="cta-fineprint reveal">// Limited to 4 deployments per quarter in the Texas market.</div>
+  </div>
+</section>
+
+<!-- ======================== THE PROBLEM ======================== -->
+<section id="problem">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">01 — THE PROBLEM</span>
+    </div>
+
+    <h2 class="reveal">Your next case is sitting in a form submission from <span class="accent">last Tuesday at 9:42pm.</span></h2>
+
+    <p class="lede reveal">A claimant searches at 9pm. They fill out three forms. The firm that calls back first signs them. Most PI firms don't call back until 9am the next morning—if at all. By then, the case is already on a contingency agreement somewhere else.</p>
+
+    <p class="reveal">This isn't a marketing problem. It's an intake problem. You can buy more leads, run more ads, hire more paralegals—and still bleed 30–50% of qualified intakes to the firm that responds faster. Manual intake doesn't scale, and SaaS chatbots feel like SaaS chatbots.</p>
+
+    <div class="stat-row reveal">
+      <div class="stat">
+        <div class="stat-num"><span class="accent">100×</span></div>
+        <div class="stat-label">More likely to qualify a lead when contacted in &lt;5 min vs &gt;30 min<span class="source">— Harvard Business Review lead-response study</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">78%</div>
+        <div class="stat-label">Of buyers go with the first firm to respond<span class="source">— InsideSales / XANT lead response data</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">9.42<span class="accent">pm</span></div>
+        <div class="stat-label">Median submission time of qualified PI intake forms (after-hours)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">&lt;60<span class="accent">s</span></div>
+        <div class="stat-label">PI ENGINE first-touch response. Voice, SMS, or email. 24/7/365.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== MECHANISM ======================== -->
+<section id="mechanism">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">02 — THE MECHANISM</span>
+    </div>
+
+    <h2 class="reveal">Hardware in your office. Local LLM. Workflow enforcement on top.</h2>
+
+    <p class="reveal">PI ENGINE isn't a chatbot widget or a Zapier flow. It's a dedicated NVIDIA Jetson appliance we install on your firm's network, running a custom-trained language model that understands your intake criteria, your tone, and your case types. Every channel routes through it. Every interaction is logged, qualified, and enforced against your follow-up sequence.</p>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-step-num">STAGE 01 // CAPTURE</div>
+        <h3>Every channel, one pipeline.</h3>
+        <p>Web forms, paid ads, CallRail tracking, SMS short codes, chat. Inbound signal hits PI ENGINE within seconds of submission—including after-hours, weekends, and holidays.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STAGE 02 // RESPOND</div>
+        <h3>Sub-60-second qualification.</h3>
+        <p>The local LLM places a voice call, SMS, or email in your firm's voice. It qualifies the claim against your criteria—statute, jurisdiction, fault, severity, prior representation—and books a screened intake call.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STAGE 03 // ENFORCE</div>
+        <h3>Nothing falls through.</h3>
+        <p>PI ENGINE owns the follow-up sequence. If a lead doesn't pick up, it persists. If an attorney misses the callback, it escalates. Daily reports surface what closed, what stalled, and where revenue leaked.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SPECS ======================== -->
+<section id="specs">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">03 — SPECIFICATIONS</span>
+    </div>
+
+    <h2 class="reveal">No abstractions. Here's exactly what gets installed.</h2>
+
+    <div class="spec-table reveal">
+      <div class="spec-row">
+        <div class="spec-key">Hardware</div>
+        <div class="spec-val">NVIDIA Jetson Orin appliance, deployed and racked on-site. <span class="accent">Owned by your firm after deployment.</span></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Response Time</div>
+        <div class="spec-val">&lt;60 seconds, 24/7/365. Voice + SMS + email channels active concurrently.</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Language Model</div>
+        <div class="spec-val">Local-LLM inference. <span class="accent">No data sent to OpenAI, Anthropic, or any third-party cloud.</span> Privilege-protected by design.</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Capture Channels</div>
+        <div class="spec-val">Web forms · CallRail · paid-ad lead forms · SMS short code · website chat · referral CRM hooks</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">CRM Integrations</div>
+        <div class="spec-val">HubSpot · Filevine · Litify · Lead Docket · Clio · custom REST endpoints</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Qualification Logic</div>
+        <div class="spec-val">Custom-trained on your intake criteria. Rules editable without engineering. Versioned, auditable.</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Reporting</div>
+        <div class="spec-val">Daily intake brief · weekly leak report · monthly attorney-level conversion attribution</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Deployment Window</div>
+        <div class="spec-val">2–4 weeks from contract to live. Phased: shadow mode → human-supervised → autonomous.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== WHY LOCAL ======================== -->
+<section id="why-local">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">04 — WHY LOCAL MATTERS</span>
+    </div>
+
+    <h2 class="reveal">Cloud SaaS is the wrong shape for a PI firm.</h2>
+
+    <p class="reveal">Every cloud-based legal AI tool ships your client conversations to a third-party server. That's a privilege problem, a vendor lock-in problem, and a long-term unit-economics problem. PI ENGINE solves all three by running on your network, on hardware you own.</p>
+
+    <div class="compare reveal">
+      <div class="compare-col bad">
+        <h4>Cloud SaaS Intake Tool</h4>
+        <ul>
+          <li>Client conversations transit a third-party API</li>
+          <li>Per-seat or per-conversation pricing — costs scale with growth</li>
+          <li>You don't own the model or the data</li>
+          <li>Outages take you offline mid-intake</li>
+          <li>Vendor can change pricing, sunset features, or get acquired</li>
+          <li>Generic prompts trained on everyone's firm</li>
+        </ul>
+      </div>
+      <div class="compare-col good">
+        <h4>PI ENGINE</h4>
+        <ul>
+          <li>All inference happens on hardware in your office</li>
+          <li>Flat retainer — costs don't scale with case volume</li>
+          <li>You own the appliance after deployment</li>
+          <li>Functions during internet outages for local intake</li>
+          <li>Configuration versioned in your firm's repository</li>
+          <li>Custom-trained on your firm's voice and criteria</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== WHO IT'S FOR ======================== -->
+<section id="fit">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">05 — DEPLOYMENT FIT</span>
+    </div>
+
+    <h2 class="reveal">PI ENGINE is built for a specific kind of firm.</h2>
+
+    <p class="reveal">We turn down most inquiries. Deployment requires hardware install, model training, and ongoing service—it only makes economic sense above a baseline of monthly lead volume.</p>
+
+    <div class="fit reveal">
+      <div class="fit-col in">
+        <h4>// FIT</h4>
+        <p><strong>3–15 attorneys.</strong> Enough volume to justify infrastructure, small enough to avoid enterprise procurement.</p>
+        <p><strong>Active paid lead flow</strong> ($5k+/month on Google, Meta, LSA, or referral spend).</p>
+        <p><strong>Personal injury</strong> as primary or majority practice area. Auto, premises, product, work injury, mass tort.</p>
+        <p><strong>Texas market</strong> preferred—hardware install and on-site service operate within a same-day radius.</p>
+        <p><strong>Frustration with current intake.</strong> Calls dropping. After-hours leads dying. Staff overwhelmed.</p>
+      </div>
+      <div class="fit-col out">
+        <h4>// NOT FIT</h4>
+        <p>Solo or 2-attorney firms — economics don't work below threshold lead volume.</p>
+        <p>Firms with no active paid acquisition channel — there's nothing for PI ENGINE to plug into.</p>
+        <p>Practice areas other than PI — M&amp;A, family, criminal, IP have fundamentally different intake dynamics.</p>
+        <p>Firms looking for "AI to draft motions" — that's not what this does. PI ENGINE is intake, and intake only.</p>
+        <p>Buyers shopping on price alone — there are cheaper SaaS chatbots. None do what this does.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== OFFER ======================== -->
+<section id="offer">
+  <div class="container">
+    <div class="section-tag reveal">
+      <span class="section-tag-bar"></span>
+      <span class="label">06 — STRUCTURE</span>
+    </div>
+
+    <h2 class="reveal">Three components. <span class="accent">No per-seat SaaS.</span></h2>
+
+    <p class="reveal">PI ENGINE is priced as a deployment, not a subscription. You pay to install it, retain us to run it, and we share upside on the cases it sources for you above your historical baseline. Aligned incentives by design.</p>
+
+    <div class="offer-stack reveal">
+      <div class="offer-row">
+        <div class="offer-row-num">01 / DEPLOY</div>
+        <div>
+          <div class="offer-row-title">Hardware, training, integration.</div>
+          <p class="offer-row-desc">Jetson appliance installed on-site. Local model fine-tuned on your firm's intake criteria, voice, and case-type triage. Channel routing wired into your existing CRM. Phased rollout: shadow → supervised → autonomous.</p>
+        </div>
+        <div class="offer-row-price">One-time fee<br><span class="accent">Quoted on the call</span></div>
+      </div>
+      <div class="offer-row">
+        <div class="offer-row-num">02 / RETAIN</div>
+        <div>
+          <div class="offer-row-title">Monthly service + monitoring.</div>
+          <p class="offer-row-desc">Active monitoring, model updates, qualification rule changes, monthly performance review. Daily intake briefs. Weekly leak reports. We own the uptime.</p>
+        </div>
+        <div class="offer-row-price">Flat monthly<br><span class="accent">Not per-seat. Not per-lead.</span></div>
+      </div>
+      <div class="offer-row">
+        <div class="offer-row-num">03 / SHARE</div>
+        <div>
+          <div class="offer-row-title">Performance bonus on signed cases.</div>
+          <p class="offer-row-desc">A negotiated share of upside on signed cases above your firm's historical baseline. We don't get rewarded unless your conversion rate moves. If PI ENGINE doesn't produce, we don't earn.</p>
+        </div>
+        <div class="offer-row-price">Performance only<br><span class="accent">Aligned to outcomes</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CLOSING CTA ======================== -->
+<section id="book">
+  <div class="container">
+    <div class="close-cta reveal">
+      <div class="section-tag" style="margin-bottom: 24px;">
+        <span class="section-tag-bar"></span>
+        <span class="label">07 — NEXT STEP</span>
+      </div>
+
+      <h2>20 minutes. We audit your current intake on the call.</h2>
+
+      <p>Send us your firm name and primary lead channels. We'll come to the call with: your average response time benchmarked against the market, the points in your funnel where leads are likely dying, and a deployment estimate if you're a fit. If you're not a fit, we'll tell you on the call. No follow-up sequence.</p>
+
+      <div class="cta-row">
+        <a href="mailto:hello@optivis.dev?subject=PI%20ENGINE%20Briefing%20Request" class="cta">Schedule the briefing <span class="cta-arrow">→</span></a>
+        <a href="tel:+17135550100" class="cta cta-secondary">Or call: 713 · 555 · 0100</a>
+      </div>
+
+      <div class="cta-fineprint" style="margin-top: 24px;">// We accept 4 new deployments per quarter. Current quarter: <span style="color: var(--accent);">2 of 4 slots open</span><span class="cursor-blink"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">OPTIVIS<span class="accent">.DEV</span></div>
+        <div class="footer-meta" style="text-align: left; margin-top: 12px;">
+          PI ENGINE is a product of OptiVis Automation<br>
+          Houston, Texas — operating across the U.S.
+        </div>
+      </div>
+      <div class="footer-meta">
+        FIELD REPORT 001 / PI ENGINE / V.2026.04<br>
+        CLASSIFICATION: RESTRICTED<br>
+        © OPTIVIS — ALL RIGHTS RESERVED
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mark JS as ready so hide-then-reveal CSS engages.
+  // Without this, all .reveal content stays visible — no flash of empty content if JS fails.
+  document.documentElement.classList.add('js-ready');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.animationDelay = (i % 3) * 80 + 'ms';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
